@@ -1,11 +1,14 @@
 "use client";
 
+import { Suspense } from "react";
+
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import PatientSidebar from "../sidebar";
-import { Suspense } from "react";
 
 function PatientEHRPage() {
+
   const searchParams = useSearchParams();
 
   const [notes, setNotes] = useState("");
@@ -17,6 +20,29 @@ function PatientEHRPage() {
     location: searchParams.get("location") || "N/A",
     reason: searchParams.get("reason") || "N/A",
   };
+
+
+  const [transcript, setTranscript] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const supabase = createClientComponentClient()
+
+  const retrieveTranscription = async () => {
+    const { data, error } = await supabase
+      .from("transcriptions")
+      .select("*")
+      .order("created_at", { ascending: false }) // newest first
+      .limit(1); // just get the top one
+
+    if (error) {
+      console.error("Error fetching latest transcription:", error);
+    } else if (data && data.length > 0) {
+      setTranscript(data[0].transcription_text);
+    }
+    setLoading(false);
+  };
+
+  retrieveTranscription();
 
   return (
     <div className="flex min-h-screen">
@@ -72,11 +98,34 @@ function PatientEHRPage() {
               onChange={(e) => setNotes(e.target.value)}
             />
           </div>
+
+          <div>
+          <textarea
+            
+              className="w-full border rounded p-3 text-sm text-gray-700"
+              rows={5}
+              placeholder="transcription."
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+            {loading ? (
+              <p>Loading transcript...</p>
+            ) : (
+              <div>
+                <h2 className="text-lg font-semibold mb-2">Transcript</h2>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {transcript || "No transcript found."}
+                </div>
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
     </div>
   );
 }
+
 
 export default function EHRPage() {
   return (
@@ -85,3 +134,4 @@ export default function EHRPage() {
     </Suspense>
   );
 }
+
