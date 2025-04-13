@@ -8,7 +8,7 @@ import { EHRAutoFill } from "@/app/gemini/ehr";
 
 export default function StartPage() {
   const [transcript, setTranscript] = useState("");
-  const [audioBlob, setAudioBlob] = useState(null);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [chaperoneDocumentation, setChaperoneDocumentation] = useState("");
