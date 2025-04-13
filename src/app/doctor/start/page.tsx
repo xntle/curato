@@ -49,19 +49,20 @@ export default function StartPage() {
         try {
           const data = JSON.parse(decodedText);
           console.log("✅ Parsed QR data:", data);
+          handleValidQR(data);
 
-          // Set form values with scanned data (if applicable)
-          setChiefComplaint(data.chiefComplaint || "");
-          setAllergies(data.allergies || "");
-          setCurrentMedications(data.currentMedications || "");
-          setProblemListAndHistory(data.problemListAndHistory || "");
-          setPhysicalExam(data.physicalExam || "");
-          setChaperoneDocumentation(data.chaperoneDocumentation || "");
-          setVitalsAndSmokingStatus(data.vitalsAndSmokingStatus || "");
-          setSubjective(data.subjective || "");
-          setObjective(data.objective || "");
-          setAssessment(data.assessment || "");
-          setPlan(data.plan || "");
+          // // Set form values with scanned data (if applicable)
+          // setChiefComplaint(data.chiefComplaint || "");
+          // setAllergies(data.allergies || "");
+          // setCurrentMedications(data.currentMedications || "");
+          // setProblemListAndHistory(data.problemListAndHistory || "");
+          // setPhysicalExam(data.physicalExam || "");
+          // setChaperoneDocumentation(data.chaperoneDocumentation || "");
+          // setVitalsAndSmokingStatus(data.vitalsAndSmokingStatus || "");
+          // setSubjective(data.subjective || "");
+          // setObjective(data.objective || "");
+          // setAssessment(data.assessment || "");
+          // setPlan(data.plan || "");
 
           scanner.stop().then(() => setShowScanner(false));
         } catch (err) {
@@ -78,6 +79,18 @@ export default function StartPage() {
       scanner.stop().catch(() => {});
     };
   }, [showScanner]);
+  const handleValidQR = (data: any) => {
+    if (
+      typeof data === "object" &&
+      data !== null &&
+      typeof data.chiefComplaint === "string" &&
+    ) {
+      setChiefComplaint(data.chiefComplaint);
+      setShowScanner(false); // ✅ only close after a successful scan
+    } else {
+      alert("⚠️ QR code data is missing required fields or is malformed.");
+    }
+  };
 
   const handleSaveToPDF = () => {
     const doc = new jsPDF();
