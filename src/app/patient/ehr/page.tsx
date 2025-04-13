@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useSearchParams } from "next/navigation";
