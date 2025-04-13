@@ -1,13 +1,15 @@
 "use client";
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DoctorSidebar from "../sidebar";
 import { TranscriptionService } from "@/app/gemini/transcribe";
 import { blobToBase64 } from "@/app/gemini/blobToBase64";
 import { EHRAutoFill } from "@/app/gemini/ehr";
 import jsPDF from "jspdf";
 // at the bottom of your EHR form page component:
+
+import { Html5Qrcode } from "html5-qrcode";
 
 export default function StartPage() {
   const [transcript, setTranscript] = useState("");
@@ -16,6 +18,7 @@ export default function StartPage() {
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
   );
+  const [showScanner, setShowScanner] = useState(false);
 
   const [chaperoneDocumentation, setChaperoneDocumentation] =
     useState<string>("");
@@ -36,6 +39,49 @@ export default function StartPage() {
   const supabase = createClientComponentClient()
 
   //this should update the database of the patient
+  useEffect(() => {
+    if (!showScanner) return;
+
+    const scanner = new Html5Qrcode("qr-reader");
+
+    scanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+
+      (decodedText) => {
+        try {
+          const data = JSON.parse(decodedText);
+          console.log("✅ Parsed QR data:", data);
+
+          // Set form values with scanned data (if applicable)
+          setChiefComplaint(data.chiefComplaint || "");
+          setAllergies(data.allergies || "");
+          setCurrentMedications(data.currentMedications || "");
+          setProblemListAndHistory(data.problemListAndHistory || "");
+          setPhysicalExam(data.physicalExam || "");
+          setChaperoneDocumentation(data.chaperoneDocumentation || "");
+          setVitalsAndSmokingStatus(data.vitalsAndSmokingStatus || "");
+          setSubjective(data.subjective || "");
+          setObjective(data.objective || "");
+          setAssessment(data.assessment || "");
+          setPlan(data.plan || "");
+
+          scanner.stop().then(() => setShowScanner(false));
+        } catch (err) {
+          console.error("Invalid QR content", err);
+          // Don't close scanner here
+        }
+      },
+      (errorMessage) => {
+        console.log("QR error", errorMessage);
+      }
+    );
+
+    return () => {
+      scanner.stop().catch(() => {});
+    };
+  }, [showScanner]);
+
   const handleSaveToPDF = () => {
     const doc = new jsPDF();
     let y = 10;
@@ -198,6 +244,12 @@ export default function StartPage() {
 
         {/* Full EHR Form Section */}
         <div className="p-6 bg-white rounded-lg shadow border space-y-6">
+          <button
+            onClick={() => setShowScanner(true)}
+            className="bg-rose-600 text-white px-4 py-2 rounded hover:bg-rose-700"
+          >
+            Scan QR
+          </button>
           <h2 className="text-xl font-semibold">EHR Form</h2>
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
             Patient Details
@@ -417,6 +469,20 @@ export default function StartPage() {
           Save Form
         </button>
       </div>
+      {showScanner && (
+        <div className="fixed inset-0 border bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md relative">
+            <h2 className="text-xl font-semibold mb-4">Scan Patient QR Code</h2>
+            <div id="qr-reader" className="w-full h-64" />
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowScanner(false)}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
