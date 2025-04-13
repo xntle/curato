@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import PatientSidebar from "../sidebar";
-// import { ReactSearch } from "@vectara/react-search";
 
 export default function AppointmentsPage() {
   const upcomingAppointments = [
@@ -29,23 +29,14 @@ export default function AppointmentsPage() {
       location: "Urgent Care",
       reason: "Rash all over",
     },
-    {
-      date: "February 20, 2025",
-      time: "9:15 AM",
-      provider: "Dr. Tom Yamada",
-      location: "Primary Care",
-      reason: "Annual physical exam",
-    },
   ];
 
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar */}
       <div className="w-64">
         <PatientSidebar />
       </div>
 
-      {/* Page content */}
       <div className="flex-1 p-6 space-y-8">
         <div className="bg-white p-4 rounded-lg shadow border">
           <h1 className="text-2xl font-bold text-gray-800 mb-1">
@@ -79,17 +70,28 @@ export default function AppointmentsPage() {
           <h2 className="text-xl font-semibold mb-4">Past Appointments</h2>
           <div className="space-y-4">
             {pastAppointments.map((appt, index) => (
-              <div
+              <Link
                 key={index}
-                className="p-4 border rounded-md shadow-sm bg-gray-50 space-y-1"
+                href={{
+                  pathname: "/patient/ehr",
+                  query: {
+                    date: appt.date,
+                    time: appt.time,
+                    provider: appt.provider,
+                    location: appt.location,
+                    reason: appt.reason,
+                  },
+                }}
               >
-                <p className="text-gray-700 font-medium">
-                  {appt.date} at {appt.time}
-                </p>
-                <p className="text-gray-600">With {appt.provider}</p>
-                <p className="text-gray-600">{appt.location}</p>
-                <p className="text-gray-500 text-sm">Reason: {appt.reason}</p>
-              </div>
+                <div className="p-4 border rounded-md shadow-sm bg-gray-50 space-y-1 hover:bg-gray-100 transition cursor-pointer">
+                  <p className="text-gray-700 font-medium">
+                    {appt.date} at {appt.time}
+                  </p>
+                  <p className="text-gray-600">With {appt.provider}</p>
+                  <p className="text-gray-600">{appt.location}</p>
+                  <p className="text-gray-500 text-sm">Reason: {appt.reason}</p>
+                </div>
+              </Link>
             ))}
           </div>
         </section>

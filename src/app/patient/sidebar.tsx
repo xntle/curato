@@ -17,7 +17,6 @@ import { Bot } from "lucide-react";
 
 const items = [
   { title: "Appointments", url: "/patient/appointments", icon: Calendar },
-  { title: "Chat", url: "/patient/chat", icon: Bot },
   { title: "Share My EHR", url: "/patient/shareRecord", icon: ScanQrCode },
 ];
 
