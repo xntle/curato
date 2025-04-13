@@ -5,6 +5,16 @@ import PatientSidebar from "../sidebar";
 import QRCode from "react-qr-code";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
+type EHRRecord = {
+  patient_name: string;
+  lived_name: string;
+  dob: string;
+  sex: string;
+  allergies: string;
+  current_medications: string;
+  problem_list_history: string;
+};
+
 export default function ShareRecordPage() {
   const supabase = createClientComponentClient();
 
@@ -20,7 +30,7 @@ export default function ShareRecordPage() {
   });
 
   const [showQR, setShowQR] = useState(false);
-  const [ehrData, setEhrData] = useState<any>(null); // fetched EHR
+  const [ehrData, setEhrData] = useState<EHRRecord | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
