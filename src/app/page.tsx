@@ -1,9 +1,8 @@
 "use client";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Heartbeat from "@/components/ui/heartbeat";
-import { Mic, FileText, FileCode2, Share2 } from "lucide-react"; // You can swap these icons out with your own set
+import { Mic, FileText, Share2 } from "lucide-react"; // You can swap these icons out with your own set
 export default function Home() {
   const router = useRouter();
   return (

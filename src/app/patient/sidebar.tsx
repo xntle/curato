@@ -13,7 +13,6 @@ import {
 import { LogOut } from "lucide-react";
 import { ScanQrCode } from "lucide-react";
 import { Calendar } from "lucide-react";
-import { Bot } from "lucide-react";
 
 const items = [
   { title: "Appointments", url: "/patient/appointments", icon: Calendar },

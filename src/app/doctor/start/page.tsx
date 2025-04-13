@@ -74,7 +74,19 @@ export default function StartPage() {
       scannerRef.current?.stop().catch(console.warn);
     };
   }, [showScanner]);
-  const handleValidQR = (data: any) => {
+  const handleValidQR = (data: {
+    chiefComplaint?: string;
+    allergies?: string;
+    currentMedications?: string;
+    problemListAndHistory?: string;
+    physicalExam?: string;
+    chaperoneDocumentation?: string;
+    vitalsAndSmokingStatus?: string;
+    subjective?: string;
+    objective?: string;
+    assessment?: string;
+    plan?: string;
+  }) => {
     setChiefComplaint(data.chiefComplaint || "");
     setAllergies(data.allergies || "");
     setCurrentMedications(data.currentMedications || "");
@@ -89,6 +101,7 @@ export default function StartPage() {
 
     setShowScanner(false);
   };
+
   const handleSaveToPDF = () => {
     const doc = new jsPDF();
     let y = 10;
