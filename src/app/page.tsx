@@ -9,10 +9,11 @@ export default function Home() {
     <main className=" font-sans text-gray-800">
       {/* Hero Section */}
       <section className="h-screen py-24 px-6 flex flex-col justify-center text-center">
+        <Heartbeat></Heartbeat>
         <h1 className="text-4xl md:text-6xl font-bold mb-4">curato</h1>
         <p>
-          Skip writing ehr We save time for physicians so they can make space
-          for patients.
+          Doctors spend more time on charts than with patients — we fix that
+          with smart EHR automation.
         </p>
         <div className="space-x-4 mt-8">
           <Button onClick={() => router.push("/login/patient")}>
@@ -144,6 +145,15 @@ export default function Home() {
           We&apos;re here to bring the humanity back to healthcare. One voice,
           one note, one conversation at a time.
         </p>
+        <div className="space-x-4 mt-8">
+          <p className="mb-2">Start Today</p>
+          <Button onClick={() => router.push("/login/patient")}>
+            I&apos;m a patient
+          </Button>
+          <Button onClick={() => router.push("/login/doctors")}>
+            I&apos;m a doctor
+          </Button>
+        </div>
       </section>
     </main>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import PatientSidebar from "../sidebar";
+// import { ReactSearch } from "@vectara/react-search";
 
 export default function AppointmentsPage() {
   const upcomingAppointments = [
