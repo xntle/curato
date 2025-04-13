@@ -2,13 +2,12 @@
 
 import { Suspense } from "react";
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PatientSidebar from "../sidebar";
 
 function PatientEHRPage() {
-
   const searchParams = useSearchParams();
 
   const [notes, setNotes] = useState("");
@@ -25,7 +24,6 @@ function PatientEHRPage() {
   const [assessment, setAssessment] = useState("");
   const [plan, setPlan] = useState("");
 
-
   const appointment = {
     date: searchParams.get("date") || "N/A",
     time: searchParams.get("time") || "N/A",
@@ -34,11 +32,10 @@ function PatientEHRPage() {
     reason: searchParams.get("reason") || "N/A",
   };
 
-
   const [transcript, setTranscript] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const supabase = createClientComponentClient()
+  const supabase = createClientComponentClient();
 
   const retrieveTranscription = async () => {
     const { data, error } = await supabase
@@ -57,35 +54,37 @@ function PatientEHRPage() {
 
   retrieveTranscription();
 
-  const fetchLatestEHR = async () => {
-    const { data, error } = await supabase
-      .from("ehr")
-      .select("*")
-      .order("created_at", { ascending: false }) // assuming you have a `created_at` timestamp column
-      .limit(1)
-      .single(); // gets the first object instead of an array
-  
-    if (error) {
-      console.error("Error fetching EHR:", error);
-      return;
-    }
-  
-    if (data) {
-      setChaperoneDocumentation(data.chaperoneDocumentation || "");
-      setVitalsAndSmokingStatus(data.vitalsAndSmokingStatus || "");
-      setChiefComplaint(data.chiefComplaint || "");
-      setAllergies(data.allergies || "");
-      setCurrentMedications(data.currentMedications || "");
-      setProblemListAndHistory(data.problemListAndHistory || "");
-      setPhysicalExam(data.physicalExam || "");
-      setSubjective(data.subjective || "");
-      setObjective(data.objective || "");
-      setAssessment(data.assessment || "");
-      setPlan(data.plan || "");
-    }
-    fetchLatestEHR();
-  };
+  useEffect(() => {
+    const fetchLatestEHR = async () => {
+      const { data, error } = await supabase
+        .from("ehr")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single(); // only expect one object
 
+      if (error) {
+        console.error("Error fetching EHR:", error);
+        return;
+      }
+
+      if (data) {
+        setChaperoneDocumentation(data.chaperoneDocumentation || "");
+        setVitalsAndSmokingStatus(data.vitalsAndSmokingStatus || "");
+        setChiefComplaint(data.chiefComplaint || "");
+        setAllergies(data.allergies || "");
+        setCurrentMedications(data.currentMedications || "");
+        setProblemListAndHistory(data.problemListAndHistory || "");
+        setPhysicalExam(data.physicalExam || "");
+        setSubjective(data.subjective || "");
+        setObjective(data.objective || "");
+        setAssessment(data.assessment || "");
+        setPlan(data.plan || "");
+      }
+    };
+
+    fetchLatestEHR(); // 👈 correct placement
+  }, []);
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
@@ -142,8 +141,7 @@ function PatientEHRPage() {
           </div>
 
           <div>
-          <textarea
-            
+            <textarea
               className="w-full border rounded p-3 text-sm text-gray-700"
               rows={5}
               placeholder="transcription."
@@ -162,53 +160,55 @@ function PatientEHRPage() {
             )}
           </div>
           <div>
-          <h2 className="text-lg font-semibold mb-2">EHR Summary</h2>
-          {loading ? (
-            <p>Loading EHR...</p>
-          ) : (
-            <div>
-              <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
-                {chaperoneDocumentation || "No Chaperone Documentation found."}
+            <h2 className="text-lg font-semibold mb-2">EHR Summary</h2>
+            {loading ? (
+              <p>Loading EHR...</p>
+            ) : (
+              <div>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {chaperoneDocumentation ||
+                    "No Chaperone Documentation found."}
+                </div>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {vitalsAndSmokingStatus ||
+                    "No Vital and Smoking Status Notes found."}
+                </div>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {chiefComplaint || "No Chief Complaint found."}
+                </div>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {allergies || "No Allergy Information found."}
+                </div>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {currentMedications || "No Current Medications listed."}
+                </div>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {problemListAndHistory ||
+                    "No Problem List / History available."}
+                </div>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {physicalExam || "No Physical Exam details found."}
+                </div>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {subjective || "No Subjective notes found."}
+                </div>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {objective || "No Objective notes found."}
+                </div>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {assessment || "No Assessment provided."}
+                </div>
+                <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
+                  {plan || "No Plan listed."}
+                </div>
               </div>
-              <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
-                {vitalsAndSmokingStatus || "No Vital and Smoking Status Notes found."}
-              </div>
-              <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
-                {chiefComplaint || "No Chief Complaint found."}
-              </div>
-              <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
-                {allergies || "No Allergy Information found."}
-              </div>
-              <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
-                {currentMedications || "No Current Medications listed."}
-              </div>
-              <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
-                {problemListAndHistory || "No Problem List / History available."}
-              </div>
-              <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
-                {physicalExam || "No Physical Exam details found."}
-              </div>
-              <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
-                {subjective || "No Subjective notes found."}
-              </div>
-              <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
-                {objective || "No Objective notes found."}
-              </div>
-              <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
-                {assessment || "No Assessment provided."}
-              </div>
-              <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm whitespace-pre-wrap">
-                {plan || "No Plan listed."}
-              </div>
-            </div>
-          )}
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 }
-
 
 export default function EHRPage() {
   return (
@@ -217,4 +217,3 @@ export default function EHRPage() {
     </Suspense>
   );
 }
-
