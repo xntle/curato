@@ -1,5 +1,4 @@
 "use client";
-import TrueFocus from "../components/ui/TrueFocus";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";

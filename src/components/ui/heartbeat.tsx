@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { motion, useCycle } from "framer-motion";
 
 export default function Heartbeat() {

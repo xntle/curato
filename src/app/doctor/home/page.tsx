@@ -25,7 +25,9 @@ export default function HomePage() {
         <h1 className="text-2xl font-bold mb-4">Welcome Back, Doc</h1>
 
         <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-3">Today's Appointments</h2>
+          <h2 className="text-xl font-semibold mb-3">
+            Today&apos;s Appointments
+          </h2>
           <div className="bg-white shadow rounded-lg divide-y">
             {patientsToday.map((patient, index) => (
               <div

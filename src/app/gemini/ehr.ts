@@ -36,7 +36,7 @@ export class EHRAutoFill {
     this.model = genAI.getGenerativeModel({ model: MODEL_NAME });
   }
 
-  async fillEHRForm(transcript: string): Promise<any> {
+  async fillEHRForm(transcript: string): Promise<string> {
     try {
       const result = await this.model.generateContent([
         {

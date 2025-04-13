@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FcGoogle } from "react-icons/fc";
 import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -63,7 +62,7 @@ export default function LoginPage() {
             className="flex items-center gap-2 text-sm text-gray-600"
             onClick={() => router.push("/login/doctors")}
           >
-            I'm a doctor
+            I&apos;m a doctor
           </Button>
         </div>
       </div>

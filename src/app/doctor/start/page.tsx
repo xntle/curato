@@ -28,7 +28,7 @@ export default function StartPage() {
     if (!isRecording) {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
-      const chunks: any = [];
+      const chunks = [];
 
       recorder.ondataavailable = (e) => chunks.push(e.data);
       recorder.onstop = () => {
