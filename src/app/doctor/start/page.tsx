@@ -1,6 +1,6 @@
 "use client";
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useRef, useState } from "react";
 import DoctorSidebar from "../sidebar";
 import { TranscriptionService } from "@/app/gemini/transcribe";
@@ -36,65 +36,59 @@ export default function StartPage() {
   const [assessment, setAssessment] = useState<string>("");
   const [plan, setPlan] = useState<string>("");
 
-  const supabase = createClientComponentClient()
+  const supabase = createClientComponentClient();
+  const scannerRef = useRef<Html5Qrcode | null>(null);
 
   //this should update the database of the patient
   useEffect(() => {
     if (!showScanner) return;
 
     const scanner = new Html5Qrcode("qr-reader");
+    scannerRef.current = scanner;
 
-    scanner.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: 250 },
-
-      (decodedText) => {
-        try {
-          const data = JSON.parse(decodedText);
-          console.log("✅ Parsed QR data:", data);
-          handleValidQR(data);
-
-          // // Set form values with scanned data (if applicable)
-          // setChiefComplaint(data.chiefComplaint || "");
-          // setAllergies(data.allergies || "");
-          // setCurrentMedications(data.currentMedications || "");
-          // setProblemListAndHistory(data.problemListAndHistory || "");
-          // setPhysicalExam(data.physicalExam || "");
-          // setChaperoneDocumentation(data.chaperoneDocumentation || "");
-          // setVitalsAndSmokingStatus(data.vitalsAndSmokingStatus || "");
-          // setSubjective(data.subjective || "");
-          // setObjective(data.objective || "");
-          // setAssessment(data.assessment || "");
-          // setPlan(data.plan || "");
-
-          scanner.stop().then(() => setShowScanner(false));
-        } catch (err) {
-          console.error("Invalid QR content", err);
-          // Don't close scanner here
+    scanner
+      .start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+          try {
+            const data = JSON.parse(decodedText);
+            if (data && typeof data === "object" && data.chiefComplaint) {
+              handleValidQR(data);
+            } else {
+              console.warn("QR is missing required fields");
+            }
+          } catch (err) {
+            console.error("Invalid QR content", err);
+          }
+        },
+        (errorMessage) => {
+          console.log("QR error", errorMessage);
         }
-      },
-      (errorMessage) => {
-        console.log("QR error", errorMessage);
-      }
-    );
+      )
+      .catch((err) => {
+        console.error("Failed to start QR scanner", err);
+      });
 
     return () => {
-      scanner.stop().catch(() => {});
+      scannerRef.current?.stop().catch(console.warn);
     };
   }, [showScanner]);
   const handleValidQR = (data: any) => {
-    if (
-      typeof data === "object" &&
-      data !== null &&
-      typeof data.chiefComplaint === "string" &&
-    ) {
-      setChiefComplaint(data.chiefComplaint);
-      setShowScanner(false); // ✅ only close after a successful scan
-    } else {
-      alert("⚠️ QR code data is missing required fields or is malformed.");
-    }
-  };
+    setChiefComplaint(data.chiefComplaint || "");
+    setAllergies(data.allergies || "");
+    setCurrentMedications(data.currentMedications || "");
+    setProblemListAndHistory(data.problemListAndHistory || "");
+    setPhysicalExam(data.physicalExam || "");
+    setChaperoneDocumentation(data.chaperoneDocumentation || "");
+    setVitalsAndSmokingStatus(data.vitalsAndSmokingStatus || "");
+    setSubjective(data.subjective || "");
+    setObjective(data.objective || "");
+    setAssessment(data.assessment || "");
+    setPlan(data.plan || "");
 
+    setShowScanner(false);
+  };
   const handleSaveToPDF = () => {
     const doc = new jsPDF();
     let y = 10;
@@ -161,7 +155,6 @@ export default function StartPage() {
       setTranscript(text);
 
       await handleSaveTranscription(text);
-
     } catch (err) {
       setTranscript("Error transcribing audio.");
       console.error(err);
@@ -176,7 +169,7 @@ export default function StartPage() {
         transcription_text: text,
       },
     ]);
-  
+
     if (error) {
       console.error("Error saving transcription:", error);
     } else {
