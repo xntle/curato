@@ -28,7 +28,7 @@ export default function StartPage() {
     if (!isRecording) {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
-      const chunks = [];
+      const chunks: Blob[] = [];
 
       recorder.ondataavailable = (e) => chunks.push(e.data);
       recorder.onstop = () => {
@@ -40,7 +40,7 @@ export default function StartPage() {
       setMediaRecorder(recorder);
       setIsRecording(true);
     } else {
-      mediaRecorder.stop();
+      mediaRecorder?.stop(); // optional chaining just in case
       setIsRecording(false);
     }
   };
