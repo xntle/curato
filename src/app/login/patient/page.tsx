@@ -10,15 +10,12 @@ import { ArrowLeft } from "lucide-react";
 export default function LoginPage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
-  const redirectTo =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    `${window.location.origin}/patient/appointments`;
 
   const handleGoogleSignIn = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: redirectTo,
+        redirectTo: `${window.location.origin}/patient/appointments`,
       },
     });
     if (error) {
