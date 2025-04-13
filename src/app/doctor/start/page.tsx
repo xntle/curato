@@ -10,19 +10,24 @@ export default function StartPage() {
   const [transcript, setTranscript] = useState("");
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [chaperoneDocumentation, setChaperoneDocumentation] = useState("");
-  const [vitalsAndSmokingStatus, setVitalsAndSmokingStatus] = useState("");
-  const [chiefComplaint, setChiefComplaint] = useState("");
-  const [allergies, setAllergies] = useState("");
-  const [currentMedications, setCurrentMedications] = useState("");
-  const [problemListAndHistory, setProblemListAndHistory] = useState("");
-  const [physicalExam, setPhysicalExam] = useState("");
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null
+  );
+  const [chaperoneDocumentation, setChaperoneDocumentation] =
+    useState<string>("");
+  const [vitalsAndSmokingStatus, setVitalsAndSmokingStatus] =
+    useState<string>("");
+  const [chiefComplaint, setChiefComplaint] = useState<string>("");
+  const [allergies, setAllergies] = useState<string>("");
+  const [currentMedications, setCurrentMedications] = useState<string>("");
+  const [problemListAndHistory, setProblemListAndHistory] =
+    useState<string>("");
+  const [physicalExam, setPhysicalExam] = useState<string>("");
 
-  const [subjective, setSubjective] = useState("");
-  const [objective, setObjective] = useState("");
-  const [assessment, setAssessment] = useState("");
-  const [plan, setPlan] = useState("");
+  const [subjective, setSubjective] = useState<string>("");
+  const [objective, setObjective] = useState<string>("");
+  const [assessment, setAssessment] = useState<string>("");
+  const [plan, setPlan] = useState<string>("");
 
   const handleRecord = async () => {
     if (!isRecording) {
@@ -65,7 +70,8 @@ export default function StartPage() {
 
     try {
       const service = new EHRAutoFill();
-      const data = await service.fillEHRForm(transcript);
+      const raw = await service.fillEHRForm(transcript);
+      const data = JSON.parse(raw);
 
       setChaperoneDocumentation(data.chaperoneDocumentation);
       setVitalsAndSmokingStatus(data.vitalsAndSmokingStatus);
