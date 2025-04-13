@@ -3,8 +3,9 @@
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import PatientSidebar from "../sidebar";
+import { Suspense } from "react";
 
-export default function PatientEHRPage() {
+function PatientEHRPage() {
   const searchParams = useSearchParams();
 
   const [notes, setNotes] = useState("");
@@ -74,5 +75,13 @@ export default function PatientEHRPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function EHRPage() {
+  return (
+    <Suspense fallback={<p>Loading appointment details...</p>}>
+      <PatientEHRPage />
+    </Suspense>
   );
 }
