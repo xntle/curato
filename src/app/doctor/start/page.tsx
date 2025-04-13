@@ -213,6 +213,34 @@ export default function StartPage() {
     }
   };
 
+  const handleUpdateEHR = async () => {
+    const { error } = await supabase.from("ehr").insert([
+      {
+        provider_id: "6672d8d3-9ae6-46f7-8978-b088eb39ad18", // update as needed
+        patient_id: "ed3ec609-76bb-4ed4-8b93-b47f1385f84a", // update as needed
+        chaperone_documentation: chaperoneDocumentation,
+        vitals_and_smoking_status: vitalsAndSmokingStatus,
+        chief_complaint: chiefComplaint,
+        allergies: allergies,
+        current_medications: currentMedications,
+        problem_list_and_history: problemListAndHistory,
+        physical_exam: physicalExam,
+        subjective: subjective,
+        objective: objective,
+        assessment: assessment,
+        plan: plan,
+        // optionally add appointment metadata like date/time, physician, etc.
+      },
+    ]);
+  
+    if (error) {
+      console.error("Failed to save EHR:", error);
+      alert("Failed to save EHR.");
+    } else {
+      alert("EHR successfully saved!");
+    }
+  };
+
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
@@ -482,6 +510,13 @@ export default function StartPage() {
 
         <button
           onClick={handleSaveToPDF}
+          className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800"
+          disabled={!subjective && !assessment && !plan}
+        >
+          Export
+        </button>
+        <button
+          onClick={handleUpdateEHR}
           className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800"
           disabled={!subjective && !assessment && !plan}
         >
