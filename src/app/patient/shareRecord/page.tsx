@@ -33,9 +33,13 @@ export default function ShareRecordPage() {
     setShowQR(true);
   };
 
-  const selectedData = Object.fromEntries(
-    Object.entries(consents).filter(([value]) => value)
-  );
+  //will be updated with pdf
+  //   const selectedData = Object.fromEntries(
+  //     Object.entries(consents).filter(([value]) => value)
+  //   );
+  const selectedData = {
+    chiefComplaint: "Persistent cough and shortness of breath.",
+  };
 
   return (
     <div className="flex min-h-screen">

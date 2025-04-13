@@ -1,11 +1,13 @@
 "use client";
 
+
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import PatientSidebar from "../sidebar";
 
-export default function PatientEHRPage() {
+function PatientEHRPage() {
+
   const searchParams = useSearchParams();
 
   const [notes, setNotes] = useState("");
@@ -17,6 +19,7 @@ export default function PatientEHRPage() {
     location: searchParams.get("location") || "N/A",
     reason: searchParams.get("reason") || "N/A",
   };
+
 
   const [transcript, setTranscript] = useState("");
   const [loading, setLoading] = useState(true);
@@ -94,6 +97,7 @@ export default function PatientEHRPage() {
               onChange={(e) => setNotes(e.target.value)}
             />
           </div>
+
           <div>
           <textarea
             
@@ -114,8 +118,19 @@ export default function PatientEHRPage() {
               </div>
             )}
           </div>
+
         </div>
       </div>
     </div>
   );
 }
+
+
+export default function EHRPage() {
+  return (
+    <Suspense fallback={<p>Loading appointment details...</p>}>
+      <PatientEHRPage />
+    </Suspense>
+  );
+}
+

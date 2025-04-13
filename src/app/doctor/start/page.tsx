@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useEffect, useRef, useState } from "react";
 import DoctorSidebar from "../sidebar";
 import { TranscriptionService } from "@/app/gemini/transcribe";
 import { blobToBase64 } from "@/app/gemini/blobToBase64";
 import { EHRAutoFill } from "@/app/gemini/ehr";
 import jsPDF from "jspdf";
 // at the bottom of your EHR form page component:
+
+import { Html5Qrcode } from "html5-qrcode";
 
 export default function StartPage() {
   const [transcript, setTranscript] = useState("");
@@ -15,6 +18,7 @@ export default function StartPage() {
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
   );
+  const [showScanner, setShowScanner] = useState(false);
 
   const [chaperoneDocumentation, setChaperoneDocumentation] =
     useState<string>("");
@@ -32,7 +36,72 @@ export default function StartPage() {
   const [assessment, setAssessment] = useState<string>("");
   const [plan, setPlan] = useState<string>("");
 
+  const supabase = createClientComponentClient();
+  const scannerRef = useRef<Html5Qrcode | null>(null);
+
   //this should update the database of the patient
+  useEffect(() => {
+    if (!showScanner) return;
+
+    const scanner = new Html5Qrcode("qr-reader");
+    scannerRef.current = scanner;
+
+    scanner
+      .start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+          try {
+            const data = JSON.parse(decodedText);
+            if (data && typeof data === "object" && data.chiefComplaint) {
+              handleValidQR(data);
+            } else {
+              console.warn("QR is missing required fields");
+            }
+          } catch (err) {
+            console.error("Invalid QR content", err);
+          }
+        },
+        (errorMessage) => {
+          console.log("QR error", errorMessage);
+        }
+      )
+      .catch((err) => {
+        console.error("Failed to start QR scanner", err);
+      });
+
+    return () => {
+      scannerRef.current?.stop().catch(console.warn);
+    };
+  }, [showScanner]);
+  const handleValidQR = (data: {
+    chiefComplaint?: string;
+    allergies?: string;
+    currentMedications?: string;
+    problemListAndHistory?: string;
+    physicalExam?: string;
+    chaperoneDocumentation?: string;
+    vitalsAndSmokingStatus?: string;
+    subjective?: string;
+    objective?: string;
+    assessment?: string;
+    plan?: string;
+  }) => {
+    setChiefComplaint(data.chiefComplaint || "");
+    setAllergies(data.allergies || "");
+    setCurrentMedications(data.currentMedications || "");
+    setProblemListAndHistory(data.problemListAndHistory || "");
+    setPhysicalExam(data.physicalExam || "");
+    setChaperoneDocumentation(data.chaperoneDocumentation || "");
+    setVitalsAndSmokingStatus(data.vitalsAndSmokingStatus || "");
+    setSubjective(data.subjective || "");
+    setObjective(data.objective || "");
+    setAssessment(data.assessment || "");
+    setPlan(data.plan || "");
+
+    setShowScanner(false);
+  };
+
   const handleSaveToPDF = () => {
     const doc = new jsPDF();
     let y = 10;
@@ -97,9 +166,27 @@ export default function StartPage() {
       const service = new TranscriptionService();
       const text = await service.transcribeAudio(base64Audio, "audio/webm");
       setTranscript(text);
+
+      await handleSaveTranscription(text);
     } catch (err) {
       setTranscript("Error transcribing audio.");
       console.error(err);
+    }
+  };
+
+  const handleSaveTranscription = async (text: string) => {
+    const { data, error } = await supabase.from("transcriptions").insert([
+      {
+        provider_id: "6672d8d3-9ae6-46f7-8978-b088eb39ad18",
+        patient_id: "ed3ec609-76bb-4ed4-8b93-b47f1385f84a",
+        transcription_text: text,
+      },
+    ]);
+
+    if (error) {
+      console.error("Error saving transcription:", error);
+    } else {
+      console.log("Transcription saved:", data);
     }
   };
 
@@ -122,7 +209,7 @@ export default function StartPage() {
       setAssessment(data.soapNote.assessment);
       setPlan(data.soapNote.plan);
     } catch (err) {
-      console.error("❌ Error autofilling form:", err);
+      console.error("Error autofilling form:", err);
     }
   };
 
@@ -176,6 +263,12 @@ export default function StartPage() {
 
         {/* Full EHR Form Section */}
         <div className="p-6 bg-white rounded-lg shadow border space-y-6">
+          <button
+            onClick={() => setShowScanner(true)}
+            className="bg-rose-600 text-white px-4 py-2 rounded hover:bg-rose-700"
+          >
+            Scan QR
+          </button>
           <h2 className="text-xl font-semibold">EHR Form</h2>
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
             Patient Details
@@ -395,6 +488,20 @@ export default function StartPage() {
           Save Form
         </button>
       </div>
+      {showScanner && (
+        <div className="fixed inset-0 border bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md relative">
+            <h2 className="text-xl font-semibold mb-4">Scan Patient QR Code</h2>
+            <div id="qr-reader" className="w-full h-64" />
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowScanner(false)}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

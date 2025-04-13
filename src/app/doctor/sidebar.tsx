@@ -12,13 +12,11 @@ import {
 
 import { Home } from "lucide-react";
 import { LogOut } from "lucide-react";
-import { ScanQrCode } from "lucide-react";
 import { Mic } from "lucide-react";
 
 const items = [
   { title: "Home", url: "/doctor/home", icon: Home },
   { title: "Start", url: "/doctor/start", icon: Mic },
-  { title: "Scan", url: "/doctor/scan", icon: ScanQrCode },
 ];
 
 const misc = [{ title: "Logout", url: "/", icon: LogOut }];
