@@ -1,5 +1,6 @@
 "use client";
 
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect, useRef, useState } from "react";
 import DoctorSidebar from "../sidebar";
 import { TranscriptionService } from "@/app/gemini/transcribe";
@@ -34,6 +35,8 @@ export default function StartPage() {
   const [objective, setObjective] = useState<string>("");
   const [assessment, setAssessment] = useState<string>("");
   const [plan, setPlan] = useState<string>("");
+
+  const supabase = createClientComponentClient()
 
   //this should update the database of the patient
   useEffect(() => {
@@ -156,9 +159,28 @@ export default function StartPage() {
       const service = new TranscriptionService();
       const text = await service.transcribeAudio(base64Audio, "audio/webm");
       setTranscript(text);
+
+      await handleSaveTranscription(text);
+
     } catch (err) {
       setTranscript("Error transcribing audio.");
       console.error(err);
+    }
+  };
+
+  const handleSaveTranscription = async (text: string) => {
+    const { data, error } = await supabase.from("transcriptions").insert([
+      {
+        provider_id: "6672d8d3-9ae6-46f7-8978-b088eb39ad18",
+        patient_id: "ed3ec609-76bb-4ed4-8b93-b47f1385f84a",
+        transcription_text: text,
+      },
+    ]);
+  
+    if (error) {
+      console.error("Error saving transcription:", error);
+    } else {
+      console.log("Transcription saved:", data);
     }
   };
 
