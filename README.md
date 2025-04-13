@@ -6,50 +6,60 @@
 
 ## 🔍 Problem
 
-Key Administrative Challenges:
+### 1. **Documentation & Record-Keeping**
 
-1. Documentation & Record-Keeping
-   Clinicians spend twice as much time on paperwork as they do with patients.
+> Clinicians spend **2x more time** on paperwork than with patients.
 
-Manual updates to EHRs are error-prone and inefficient.
+- Manual updates to EHRs are **time-consuming and error-prone**.
+- **Example**: Paper-based cognitive tests require manual scoring and data entry.
+- **Impact**: Leads to **delayed diagnoses**, **billing mistakes**, and **patient safety issues**.
 
-Example: Paper-based tests require manual scoring and data entry.
+---
 
-Impact: Delayed diagnoses, billing mistakes, and patient safety issues.
+### 2. **Appointment Scheduling & Communication**
 
-2. Appointment Scheduling & Communication
-   Scheduling via phone or email leads to inefficiencies and delays.
+> **24.4% of patients** report delays due to inefficient communication.
 
-   24.4% of patients report delayed care due to communication issues.
+- Scheduling via phone/email lacks automation and follow-up.
+- **Example**: Missed appointments due to no reminders or confirmations.
+- **Impact**: Strains staff and results in **delayed care**.
 
-Example: No automated reminders or confirmations lead to missed appointments.
+---
 
-3. Insurance & Billing
-   Dealing with coverage, prior authorizations, and claims is time-intensive.
+### 3. **Insurance & Billing**
 
-   30.9% of patients experience care delays due to insurance coordination.
+> **30.9% of patients** experience care delays due to insurance issues.
 
-Billing errors contribute to financial strain and denied claims.
+- Verifying coverage, resolving denials, and prior authorizations are time-intensive.
+- **Example**: Incorrect billing leads to **financial strain** and **denied claims**.
 
-4. Regulatory Compliance
-   A single 161-bed hospital may spend $7.6 million annually on compliance.
+---
 
-Requires nearly 59 full-time staff just to manage regulatory paperwork.
+### 4. **Regulatory Compliance**
 
-Example: Post-acute facilities must comply with 288+ extra regulations.
+> A single 161-bed hospital may spend **$7.6 million annually** on compliance.
 
-5. Care Coordination
-   Fragmented systems lead to redundant paperwork and communication gaps.
+- Requires nearly **59 full-time staff** to manage documentation and oversight.
+- **Example**: Post-acute care facilities must comply with **288+ extra regulations**.
+- **Impact**: Significant **financial and operational burden**.
 
-Referral processes are often manual and error-prone.
+---
 
-Result: Poor care continuity and repeated diagnostic tests.
+### 5. **Care Coordination**
 
-Sources:
-[1] https://creyos.com/blog/administrative-burden-in-healthcare
-[2] https://www.agilitihealth.com/caregivers/focus-on-patients-not-hospital-admin-tasks/
-[3] https://pmc.ncbi.nlm.nih.gov/articles/PMC8522562/
-[6] https://slchc.edu/uncategorized/blogs/key-challenges-facing-healthcare-administrators/
+> Fragmented systems hinder cross-provider communication.
+
+- Referral and handoff processes are often **manual and redundant**.
+- **Impact**: Leads to **miscommunication**, **duplicate tests**, and **disrupted care**.
+
+---
+
+### 📚 Sources
+
+- [1] [Creyos](https://creyos.com/blog/administrative-burden-in-healthcare)
+- [2] [Agiliti Health](https://www.agilitihealth.com/caregivers/focus-on-patients-not-hospital-admin-tasks/)
+- [3] [PMC Article](https://pmc.ncbi.nlm.nih.gov/articles/PMC8522562/)
+- [6] [SLCHC Blog](https://slchc.edu/uncategorized/blogs/key-challenges-facing-healthcare-administrators/)
 
 ---
 
@@ -106,8 +116,8 @@ Patients can:
 
 ## 🤝 Contributors
 
-- [Your Name] – Developer, Designer
-- Special thanks to all testers and clinicians who offered feedback
+- Thai An Le – Developer, Designer
+- Britney Nguyen - Developer
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
