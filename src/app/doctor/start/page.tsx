@@ -213,6 +213,37 @@ export default function StartPage() {
     }
   };
 
+<<<<<<< Updated upstream
+=======
+  const handleUpdateEHR = async () => {
+    const { error } = await supabase.from("ehr_forms").insert([
+      {
+        provider_id: "6672d8d3-9ae6-46f7-8978-b088eb39ad18",
+        patient_id: "ed3ec609-76bb-4ed4-8b93-b47f1385f84a",
+        chaperone_documentation: chaperoneDocumentation,
+        vitals_and_smoking_status: vitalsAndSmokingStatus,
+        chief_complaint: chiefComplaint,
+        allergies: allergies,
+        current_medications: currentMedications,
+        problem_list_history: problemListAndHistory,
+        physical_exam: physicalExam,
+        subjective: subjective,
+        objective: objective,
+        assessment: assessment,
+        plan: plan,
+      },
+    ])
+    .select()
+  
+    if (error) {
+      console.error("Failed to save EHR:", error);
+      alert("Failed to save EHR.");
+    } else {
+      alert("EHR successfully saved!");
+    }
+  };
+
+>>>>>>> Stashed changes
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
