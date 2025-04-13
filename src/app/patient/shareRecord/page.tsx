@@ -23,7 +23,7 @@ export default function ShareRecordPage() {
     medicalHistory: false,
     medications: false,
     allergies: false,
-    vitals: false,
+    currentMedications: false,
     testResults: false,
     documents: false,
     communicationPrefs: false,
@@ -41,8 +41,7 @@ export default function ShareRecordPage() {
         .order("created_at", { ascending: false })
         .limit(1);
 
-      console.log("🧪 Raw fetch result:", { data, error });
-      setEhrData(data);
+      setEhrData(data?.[0] || null);
 
       if (error) {
         console.error("Error fetching EHR:", error);
@@ -80,8 +79,8 @@ export default function ShareRecordPage() {
         dob: ehrData.dob || "",
         sex: ehrData.sex || "",
         allergies: ehrData.allergies || "",
-        current_medications: ehrData.currentMedications || "",
-        problem_list_history: ehrData.problemListAndHistory || "",
+        current_medications: ehrData.current_medications || "",
+        problem_list_history: ehrData.problem_list_history || "",
       }
     : {};
 
