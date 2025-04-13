@@ -6,7 +6,7 @@ import DoctorSidebar from "../sidebar";
 
 export default function ScanPage() {
   const [scannedData, setScannedData] = useState("");
-  const [parsedData, setParsedData] = useState<any | null>(null);
+  const [parsedData, setParsedData] = useState<string | null>(null);
   const scannerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function ScanPage() {
         qrCodeScanner.stop().catch(console.error);
       },
       (errorMessage) => {
-        // Handle scanning error (optional)
+        console.log(errorMessage);
       }
     );
 

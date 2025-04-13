@@ -34,7 +34,7 @@ export default function ShareRecordPage() {
   };
 
   const selectedData = Object.fromEntries(
-    Object.entries(consents).filter(([_, value]) => value)
+    Object.entries(consents).filter(([value]) => value)
   );
 
   return (
@@ -50,7 +50,7 @@ export default function ShareRecordPage() {
 
         <div className="p-6 bg-white rounded-lg shadow border space-y-4">
           <p className="text-gray-700">
-            Select the information you'd like to share with your provider:
+            Select the information you&apos;d like to share with your provider:
           </p>
 
           <div className="grid md:grid-cols-2 gap-4">
