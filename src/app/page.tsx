@@ -16,10 +16,10 @@ export default function Home() {
         </p>
         <div className="space-x-4 mt-8">
           <Button onClick={() => router.push("/login/patient")}>
-            I'm a patient
+            I&apos;m a patient
           </Button>
           <Button onClick={() => router.push("/login/doctors")}>
-            I'm a doctor
+            I&apos;m a doctor
           </Button>
         </div>
       </section>
@@ -131,8 +131,8 @@ export default function Home() {
         </h2>
         <p className="max-w-2xl mx-auto text-lg text-gray-700">
           Doctors spend too much time charting and not enough time connecting.
-          Whether you're a solo provider or a full care team, Curato helps shift
-          that balance — giving you time back for what truly matters: your
+          Whether you&apos;re a solo provider or a full care team, Curato helps
+          shift that balance — giving you time back for what truly matters: your
           patients.
         </p>
       </section>
@@ -141,8 +141,8 @@ export default function Home() {
       <section className="py-20 px-6 bg-white flex flex-col justify-center text-center h-screen">
         <Heartbeat></Heartbeat>
         <p className="max-w-2xl mx-auto text-lg text-gray-600">
-          We're here to bring the humanity back to healthcare. One voice, one
-          note, one conversation at a time.
+          We&apos;re here to bring the humanity back to healthcare. One voice,
+          one note, one conversation at a time.
         </p>
       </section>
     </main>
