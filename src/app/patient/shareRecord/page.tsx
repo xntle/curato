@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PatientSidebar from "../sidebar";
 import QRCode from "react-qr-code";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function ShareRecordPage() {
+  const supabase = createClientComponentClient();
+
   const [consents, setConsents] = useState({
     appointmentInfo: false,
     medicalHistory: false,
@@ -17,6 +20,34 @@ export default function ShareRecordPage() {
   });
 
   const [showQR, setShowQR] = useState(false);
+  const [ehrData, setEhrData] = useState<any>(null); // fetched EHR
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLatestEHR = async () => {
+      const { data, error } = await supabase
+        .from("ehr_forms")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      console.log("🧪 Raw fetch result:", { data, error });
+      setEhrData(data);
+
+      if (error) {
+        console.error("Error fetching EHR:", error);
+      } else if (data && data.length > 0) {
+        console.log("EHR fetched:", data[0]);
+        setEhrData(data[0]);
+      } else {
+        console.warn("No EHR record found.");
+      }
+
+      setLoading(false);
+    };
+
+    fetchLatestEHR();
+  }, []);
 
   const handleToggle = (field: keyof typeof consents) => {
     setConsents((prev) => ({ ...prev, [field]: !prev[field] }));
@@ -32,14 +63,17 @@ export default function ShareRecordPage() {
   const handleShare = () => {
     setShowQR(true);
   };
-
-  //will be updated with pdf
-  //   const selectedData = Object.fromEntries(
-  //     Object.entries(consents).filter(([value]) => value)
-  //   );
-  const selectedData = {
-    chiefComplaint: "Persistent cough and shortness of breath.",
-  };
+  const selectedData = ehrData
+    ? {
+        patient_name: ehrData.patient_name || "",
+        lived_name: ehrData.lived_name || "",
+        dob: ehrData.dob || "",
+        sex: ehrData.sex || "",
+        allergies: ehrData.allergies || "",
+        current_medications: ehrData.currentMedications || "",
+        problem_list_history: ehrData.problemListAndHistory || "",
+      }
+    : {};
 
   return (
     <div className="flex min-h-screen">
@@ -92,7 +126,12 @@ export default function ShareRecordPage() {
             </button>
             <button
               onClick={handleShare}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              disabled={!ehrData}
+              className={`${
+                ehrData
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              } text-white px-4 py-2 rounded`}
             >
               Share Records
             </button>
@@ -105,7 +144,7 @@ export default function ShareRecordPage() {
           </p>
         </div>
 
-        {showQR && (
+        {showQR && Object.keys(selectedData).length > 0 && (
           <div className="mt-6 bg-white border p-6 rounded-lg shadow w-fit space-y-2">
             <h2 className="text-lg font-semibold">Your Shareable QR Code</h2>
             <QRCode
@@ -117,6 +156,10 @@ export default function ShareRecordPage() {
               Scan this code during your visit to share your health information.
             </p>
           </div>
+        )}
+
+        {loading && (
+          <p className="text-sm text-gray-400">Fetching latest EHR...</p>
         )}
       </div>
     </div>

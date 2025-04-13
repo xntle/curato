@@ -30,6 +30,10 @@ export default function StartPage() {
   const [problemListAndHistory, setProblemListAndHistory] =
     useState<string>("");
   const [physicalExam, setPhysicalExam] = useState<string>("");
+  const [patientName, setPatientName] = useState<string>("");
+  const [livedName, setLivedName] = useState<string>("");
+  const [dob, setDOB] = useState<string>("");
+  const [sex, setSex] = useState<string>("");
 
   const [subjective, setSubjective] = useState<string>("");
   const [objective, setObjective] = useState<string>("");
@@ -53,7 +57,7 @@ export default function StartPage() {
         (decodedText) => {
           try {
             const data = JSON.parse(decodedText);
-            if (data && typeof data === "object" && data.chiefComplaint) {
+            if (data && typeof data === "object") {
               handleValidQR(data);
             } else {
               console.warn("QR is missing required fields");
@@ -75,29 +79,21 @@ export default function StartPage() {
     };
   }, [showScanner]);
   const handleValidQR = (data: {
-    chiefComplaint?: string;
+    patient_name?: string;
+    lived_name?: string;
+    dob?: string;
+    sex?: string;
     allergies?: string;
-    currentMedications?: string;
-    problemListAndHistory?: string;
-    physicalExam?: string;
-    chaperoneDocumentation?: string;
-    vitalsAndSmokingStatus?: string;
-    subjective?: string;
-    objective?: string;
-    assessment?: string;
-    plan?: string;
+    current_medications?: string;
+    problem_list_history?: string;
   }) => {
-    setChiefComplaint(data.chiefComplaint || "");
+    setPatientName(data.patient_name || "");
+    setLivedName(data.lived_name || "");
+    setDOB(data.dob || "");
+    setSex(data.sex || "");
     setAllergies(data.allergies || "");
-    setCurrentMedications(data.currentMedications || "");
-    setProblemListAndHistory(data.problemListAndHistory || "");
-    setPhysicalExam(data.physicalExam || "");
-    setChaperoneDocumentation(data.chaperoneDocumentation || "");
-    setVitalsAndSmokingStatus(data.vitalsAndSmokingStatus || "");
-    setSubjective(data.subjective || "");
-    setObjective(data.objective || "");
-    setAssessment(data.assessment || "");
-    setPlan(data.plan || "");
+    setCurrentMedications(data.current_medications || "");
+    setProblemListAndHistory(data.problem_list_history || "");
 
     setShowScanner(false);
   };
@@ -232,7 +228,7 @@ export default function StartPage() {
         // optionally add appointment metadata like date/time, physician, etc.
       },
     ]);
-  
+
     if (error) {
       console.error("Failed to save EHR:", error);
       alert("Failed to save EHR.");
@@ -310,8 +306,11 @@ export default function StartPage() {
               <input
                 className="w-full p-2 border rounded"
                 placeholder="Patient Name"
+                value={patientName}
+                onChange={(e) => setPatientName(e.target.value)}
               />
             </div>
+
             <div>
               <label className="block text-sm text-gray-700 mb-1">
                 Lived Name
@@ -319,18 +318,32 @@ export default function StartPage() {
               <input
                 className="w-full p-2 border rounded"
                 placeholder="Lived Name"
+                value={livedName}
+                onChange={(e) => setLivedName(e.target.value)}
               />
             </div>
+
             <div>
               <label className="block text-sm text-gray-700 mb-1">
                 Date of Birth
               </label>
-              <input className="w-full p-2 border rounded" placeholder="DOB" />
+              <input
+                className="w-full p-2 border rounded"
+                placeholder="DOB"
+                value={dob}
+                onChange={(e) => setDOB(e.target.value)}
+              />
             </div>
             <div>
               <label className="block text-sm text-gray-700 mb-1">Sex</label>
-              <input className="w-full p-2 border rounded" placeholder="Sex" />
+              <input
+                className="w-full p-2 border rounded"
+                placeholder="Sex"
+                value={sex}
+                onChange={(e) => setSex(e.target.value)}
+              />
             </div>
+
             <div>
               <label className="block text-sm text-gray-700 mb-1">
                 Appointment Date/Time
