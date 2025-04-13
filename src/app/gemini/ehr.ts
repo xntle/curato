@@ -29,6 +29,22 @@ Your response should match this structure exactly:
 Only return valid JSON. Do not include any additional explanation or notes outside the JSON. Fill in fields using only medically relevant details from the transcript. If information is missing, leave the field as an empty string.
 `;
 
+export interface EHRData {
+  chaperoneDocumentation: string;
+  vitalsAndSmokingStatus: string;
+  chiefComplaint: string;
+  allergies: string;
+  currentMedications: string;
+  problemListAndHistory: string;
+  physicalExam: string;
+  soapNote: {
+    subjective: string;
+    objective: string;
+    assessment: string;
+    plan: string;
+  };
+}
+
 export class EHRAutoFill {
   private model;
 
@@ -36,7 +52,7 @@ export class EHRAutoFill {
     this.model = genAI.getGenerativeModel({ model: MODEL_NAME });
   }
 
-  async fillEHRForm(transcript: string): Promise<string> {
+  async fillEHRForm(transcript: string): Promise<EHRData> {
     try {
       const result = await this.model.generateContent([
         {
@@ -46,12 +62,11 @@ export class EHRAutoFill {
 
       let jsonText = result.response.text().trim();
 
-      // Remove Markdown-style code block if present
       if (jsonText.startsWith("```json")) {
         jsonText = jsonText.replace(/```json|```/g, "").trim();
       }
 
-      const parsed = JSON.parse(jsonText);
+      const parsed: EHRData = JSON.parse(jsonText);
       return parsed;
     } catch (error) {
       console.error("EHR autofill error:", error);

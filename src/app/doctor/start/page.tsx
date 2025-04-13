@@ -60,7 +60,7 @@ export default function StartPage() {
       const text = await service.transcribeAudio(base64Audio, "audio/webm");
       setTranscript(text);
     } catch (err) {
-      setTranscript("❌ Error transcribing audio.");
+      setTranscript("Error transcribing audio.");
       console.error(err);
     }
   };
@@ -70,8 +70,7 @@ export default function StartPage() {
 
     try {
       const service = new EHRAutoFill();
-      const raw = await service.fillEHRForm(transcript);
-      const data = JSON.parse(raw);
+      const data = await service.fillEHRForm(transcript);
 
       setChaperoneDocumentation(data.chaperoneDocumentation);
       setVitalsAndSmokingStatus(data.vitalsAndSmokingStatus);
