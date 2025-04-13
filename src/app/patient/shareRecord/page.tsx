@@ -33,6 +33,7 @@ export default function ShareRecordPage() {
     setShowQR(true);
   };
 
+  //will be updated with pdf
   const selectedData = Object.fromEntries(
     Object.entries(consents).filter(([value]) => value)
   );
