@@ -10,7 +10,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"; // or wherever your sidebar is exported
 
-import { Home } from "lucide-react";
 import { LogOut } from "lucide-react";
 import { ScanQrCode } from "lucide-react";
 import { Calendar } from "lucide-react";
