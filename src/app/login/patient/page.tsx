@@ -1,5 +1,6 @@
 "use client";
 
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -8,9 +9,18 @@ import { ArrowLeft } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const supabase = createClientComponentClient()
 
-  const handleGoogleSignIn = () => {
-    console.log("Signing in with Google...");
+  const handleGoogleSignIn = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/patient/appointments`,
+      },
+    })
+    if (error) {
+      console.error('OAuth error:', error.message)
+    }
   };
 
   return (
@@ -22,7 +32,7 @@ export default function LoginPage() {
             variant="ghost"
             size="sm"
             className="flex items-center gap-2 text-sm text-gray-600"
-            onClick={() => router.push("/")}
+            onClick={handleGoogleSignIn}
           >
             <ArrowLeft className="w-4 h-4" />
             Back
