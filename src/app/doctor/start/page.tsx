@@ -196,7 +196,7 @@ export default function StartPage() {
       setAssessment(data.soapNote.assessment);
       setPlan(data.soapNote.plan);
     } catch (err) {
-      console.error("❌ Error autofilling form:", err);
+      console.error("Error autofilling form:", err);
     }
   };
 
